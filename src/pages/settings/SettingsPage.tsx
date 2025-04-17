@@ -1,4 +1,3 @@
-
 import React from "react";
 import { User, Bell, Shield, Moon, Sun, LogOut } from "lucide-react";
 import {
@@ -15,9 +14,12 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/hooks/use-theme";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const SettingsPage = () => {
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
 
   const handleSave = (section: string) => {
     toast({
@@ -239,24 +241,47 @@ const SettingsPage = () => {
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Theme</h3>
-                <div className="flex items-center space-x-2">
-                  <Label htmlFor="theme-mode">Dark mode</Label>
-                  <Switch id="theme-mode" />
-                </div>
                 
-                <div className="mt-4 grid grid-cols-3 gap-4">
-                  <Card className="p-4 border-2 border-primary cursor-pointer">
-                    <div className="h-16 w-full bg-primary rounded-md mb-2"></div>
-                    <p className="text-sm font-medium">Default</p>
-                  </Card>
-                  <Card className="p-4 cursor-pointer">
-                    <div className="h-16 w-full bg-blue-600 rounded-md mb-2"></div>
-                    <p className="text-sm font-medium">Blue</p>
-                  </Card>
-                  <Card className="p-4 cursor-pointer">
-                    <div className="h-16 w-full bg-green-600 rounded-md mb-2"></div>
-                    <p className="text-sm font-medium">Green</p>
-                  </Card>
+                <RadioGroup 
+                  defaultValue={theme} 
+                  onValueChange={value => setTheme(value as "light" | "dark" | "system")}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="light" id="theme-light" />
+                    <Label htmlFor="theme-light" className="flex items-center">
+                      <Sun className="mr-2 h-4 w-4" />
+                      Light
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="dark" id="theme-dark" />
+                    <Label htmlFor="theme-dark" className="flex items-center">
+                      <Moon className="mr-2 h-4 w-4" />
+                      Dark
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="system" id="theme-system" />
+                    <Label htmlFor="theme-system">System</Label>
+                  </div>
+                </RadioGroup>
+                
+                <div className="mt-6">
+                  <h3 className="text-lg font-medium mb-4">Color Theme</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Card className={`p-4 cursor-pointer ${theme === 'default' ? 'border-2 border-primary' : ''}`} onClick={() => handleSave("appearance")}>
+                      <div className="h-16 w-full bg-primary rounded-md mb-2"></div>
+                      <p className="text-sm font-medium">Default</p>
+                    </Card>
+                    <Card className="p-4 cursor-pointer" onClick={() => handleSave("appearance")}>
+                      <div className="h-16 w-full bg-blue-600 rounded-md mb-2"></div>
+                      <p className="text-sm font-medium">Blue</p>
+                    </Card>
+                    <Card className="p-4 cursor-pointer" onClick={() => handleSave("appearance")}>
+                      <div className="h-16 w-full bg-green-600 rounded-md mb-2"></div>
+                      <p className="text-sm font-medium">Green</p>
+                    </Card>
+                  </div>
                 </div>
               </div>
               
