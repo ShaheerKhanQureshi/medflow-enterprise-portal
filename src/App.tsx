@@ -11,6 +11,13 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import DoctorsList from "./pages/doctors/DoctorsList";
 import AddDoctor from "./pages/doctors/AddDoctor";
+import AppointmentsList from "./pages/appointments/AppointmentsList";
+import AppointmentsCalendar from "./pages/appointments/AppointmentsCalendar";
+import PatientsList from "./pages/patients/PatientsList";
+import MessagingHub from "./pages/messaging/MessagingHub";
+import ClaimsList from "./pages/claims/ClaimsList";
+import ReportsHub from "./pages/reports/ReportsHub";
+import SettingsPage from "./pages/settings/SettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +44,25 @@ const App = () => (
             {/* Doctor Routes */}
             <Route path="doctors" element={<DoctorsList />} />
             <Route path="doctors/add" element={<AddDoctor />} />
+            
+            {/* Appointment Routes */}
+            <Route path="appointments" element={<AppointmentsList />} />
+            <Route path="appointments/calendar" element={<AppointmentsCalendar />} />
+            
+            {/* Patient Routes */}
+            <Route path="patients" element={<PatientsList />} />
+            
+            {/* Messaging Routes */}
+            <Route path="messaging" element={<MessagingHub />} />
+            
+            {/* Claims Routes */}
+            <Route path="claims" element={<ClaimsList />} />
+            
+            {/* Reports Routes */}
+            <Route path="reports" element={<ReportsHub />} />
+            
+            {/* Settings Routes */}
+            <Route path="settings" element={<SettingsPage />} />
             
             {/* Other routes will be added as needed */}
           </Route>
