@@ -1,312 +1,315 @@
 
-import React from "react";
-import { ChevronDown, Download, BarChart3, LineChart, PieChart, Users, Calendar, FileText } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
+  FileBarChart,
+  Download,
+  Users,
+  DollarSign,
+  Calendar,
+  FilePlus,
+  ChevronRight,
+  ClipboardList,
   BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart as RechartsPieChart,
-  Pie,
-  Cell,
-  LineChart as RechartsLineChart,
-  Line,
-  Legend,
-} from "recharts";
+  PieChart
+} from "lucide-react";
 
-// Mock data for reports
-const appointmentData = [
-  { month: 'Jan', count: 65 },
-  { month: 'Feb', count: 75 },
-  { month: 'Mar', count: 85 },
-  { month: 'Apr', count: 95 },
-  { month: 'May', count: 80 },
-  { month: 'Jun', count: 90 },
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+
+// Report type definitions
+type ReportType = {
+  id: string;
+  title: string;
+  description: string;
+  category: "financial" | "operational" | "clinical";
+  icon: React.ElementType;
+  lastGenerated?: string;
+};
+
+// Mock report data
+const availableReports: ReportType[] = [
+  {
+    id: "financial-summary",
+    title: "Financial Summary",
+    description: "Overview of revenue, expenses, and profit over time",
+    category: "financial",
+    icon: DollarSign,
+    lastGenerated: "2023-05-01"
+  },
+  {
+    id: "claims-status",
+    title: "Claims Status Report",
+    description: "Status of all insurance claims by category",
+    category: "financial",
+    icon: ClipboardList,
+    lastGenerated: "2023-04-28"
+  },
+  {
+    id: "patient-visits",
+    title: "Patient Visit Analytics",
+    description: "Analysis of patient visits by doctor, department, and time",
+    category: "operational",
+    icon: Users,
+    lastGenerated: "2023-05-02"
+  },
+  {
+    id: "appointment-utilization",
+    title: "Appointment Utilization",
+    description: "Analysis of appointment scheduling and utilization",
+    category: "operational",
+    icon: Calendar
+  },
+  {
+    id: "diagnosis-trends",
+    title: "Diagnosis Trends",
+    description: "Common diagnoses and medical trends over time",
+    category: "clinical",
+    icon: BarChart,
+    lastGenerated: "2023-04-15"
+  },
+  {
+    id: "patient-demographics",
+    title: "Patient Demographics",
+    description: "Breakdown of patient population by age, gender, location",
+    category: "clinical",
+    icon: PieChart
+  }
 ];
-
-const revenueData = [
-  { month: 'Jan', amount: 15000 },
-  { month: 'Feb', amount: 17500 },
-  { month: 'Mar', amount: 20000 },
-  { month: 'Apr', amount: 25000 },
-  { month: 'May', amount: 22500 },
-  { month: 'Jun', amount: 27500 },
-];
-
-const departmentData = [
-  { name: 'Cardiology', value: 35 },
-  { name: 'Neurology', value: 25 },
-  { name: 'Pediatrics', value: 20 },
-  { name: 'Dermatology', value: 15 },
-  { name: 'Orthopedics', value: 10 },
-];
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 const ReportsHub = () => {
+  const [dateRange, setDateRange] = useState<{start: string; end: string}>({
+    start: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0],
+    end: new Date().toISOString().split('T')[0]
+  });
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [reportFormat, setReportFormat] = useState("pdf");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [currentTab, setCurrentTab] = useState("all");
+  
+  const handleGenerateReport = () => {
+    if (!selectedReportId) {
+      toast.error("Please select a report to generate");
+      return;
+    }
+    
+    const selectedReport = availableReports.find(r => r.id === selectedReportId);
+    
+    setIsGenerating(true);
+    
+    // Simulate report generation
+    setTimeout(() => {
+      setIsGenerating(false);
+      toast.success(`${selectedReport?.title} has been generated successfully!`);
+    }, 1500);
+  };
+  
+  const filteredReports = currentTab === "all" 
+    ? availableReports 
+    : availableReports.filter(report => report.category === currentTab);
+
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
-        <div className="flex items-center gap-4">
-          <Select defaultValue="month">
-            <SelectTrigger className="w-36">
-              <SelectValue placeholder="Period" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="week">This Week</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
-              <SelectItem value="quarter">This Quarter</SelectItem>
-              <SelectItem value="year">This Year</SelectItem>
-              <SelectItem value="custom">Custom Range</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Export Reports
-          </Button>
+    <div className="container mx-auto py-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Reports Hub</h1>
+          <p className="text-muted-foreground">
+            Generate and analyze reports for your medical practice.
+          </p>
         </div>
       </div>
 
-      <Tabs defaultValue="overview">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="appointments">
-            <Calendar className="mr-2 h-4 w-4" />
-            Appointments
-          </TabsTrigger>
-          <TabsTrigger value="patients">
-            <Users className="mr-2 h-4 w-4" />
-            Patients
-          </TabsTrigger>
-          <TabsTrigger value="claims">
-            <FileText className="mr-2 h-4 w-4" />
-            Claims
-          </TabsTrigger>
-        </TabsList>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Available Reports</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{availableReports.length}</div>
+            <div className="text-xs text-muted-foreground">
+              Across {availableReports.filter(r => r.category === 'financial').length} financial, 
+              {availableReports.filter(r => r.category === 'operational').length} operational, 
+              and {availableReports.filter(r => r.category === 'clinical').length} clinical categories
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Most Generated</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">Financial Summary</div>
+            <div className="text-xs text-muted-foreground">
+              Generated 24 times in the last month
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Scheduled Reports</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">3</div>
+            <div className="text-xs text-muted-foreground">
+              Next scheduled: Financial Summary (Tomorrow)
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-        <TabsContent value="overview" className="space-y-4 mt-4">
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">1,248</div>
-                <p className="text-xs text-muted-foreground">+14% from previous month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">$128,450</div>
-                <p className="text-xs text-muted-foreground">+5.2% from previous month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">New Patients</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">356</div>
-                <p className="text-xs text-muted-foreground">+7.8% from previous month</p>
-              </CardContent>
-            </Card>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2">
+          <Tabs defaultValue="all" value={currentTab} onValueChange={setCurrentTab}>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="all">All Reports</TabsTrigger>
+              <TabsTrigger value="financial">Financial</TabsTrigger>
+              <TabsTrigger value="operational">Operational</TabsTrigger>
+              <TabsTrigger value="clinical">Clinical</TabsTrigger>
+            </TabsList>
 
-          {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Monthly Appointments</CardTitle>
-                <CardDescription>Number of appointments per month</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={appointmentData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="#3b82f6" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Monthly Revenue</CardTitle>
-                <CardDescription>Revenue generated per month</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsLineChart data={revenueData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip formatter={(value) => [`$${value}`, 'Revenue']} />
-                      <Line type="monotone" dataKey="amount" stroke="#10b981" activeDot={{ r: 8 }} />
-                    </RechartsLineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Appointments by Department</CardTitle>
-                <CardDescription>Distribution of appointments across departments</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="h-80 flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsPieChart>
-                      <Pie
-                        data={departmentData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {departmentData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </RechartsPieChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Report History</CardTitle>
-                <CardDescription>List of recently generated reports</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    { id: 1, title: "Monthly Financial Summary", date: "2025-04-01", type: "PDF" },
-                    { id: 2, title: "Doctors Performance Report", date: "2025-03-15", type: "Excel" },
-                    { id: 3, title: "Patient Demographics Analysis", date: "2025-03-01", type: "PDF" },
-                    { id: 4, title: "Insurance Claims Report", date: "2025-02-15", type: "CSV" },
-                  ].map(report => (
-                    <div key={report.id} className="flex items-center justify-between p-2 border rounded-md">
-                      <div>
-                        <div className="font-medium">{report.title}</div>
-                        <div className="text-sm text-muted-foreground">
-                          Generated on {new Date(report.date).toLocaleDateString()}
+            <TabsContent value={currentTab} className="mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredReports.map((report) => (
+                  <Card 
+                    key={report.id} 
+                    className={`cursor-pointer transition-all hover:border-primary ${selectedReportId === report.id ? 'border-primary bg-primary/5' : ''}`}
+                    onClick={() => setSelectedReportId(report.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-md font-medium flex justify-between items-center">
+                        <div className="flex items-center">
+                          <div className="bg-primary/10 p-2 rounded-md mr-3">
+                            <report.icon className="h-5 w-5 text-primary" />
+                          </div>
+                          {report.title}
                         </div>
+                        {report.lastGenerated && (
+                          <Badge variant="outline" className="text-xs ml-2">
+                            Recently Generated
+                          </Badge>
+                        )}
+                      </CardTitle>
+                      <CardDescription>{report.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex justify-between items-center">
+                        <Badge variant={
+                          report.category === 'financial' ? 'default' : 
+                          report.category === 'operational' ? 'secondary' : 
+                          'outline'
+                        }>
+                          {report.category}
+                        </Badge>
+                        
+                        <ChevronRight className={`h-5 w-5 transition-transform ${selectedReportId === report.id ? 'text-primary transform rotate-90' : 'text-muted-foreground'}`} />
                       </div>
-                      <Button variant="ghost" size="sm">
-                        <Download className="mr-1 h-4 w-4" />
-                        {report.type}
-                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        <div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Report Options</CardTitle>
+              <CardDescription>
+                Configure and generate your selected report.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {selectedReportId ? (
+                <>
+                  <div className="space-y-2">
+                    <Label>Report</Label>
+                    <div className="p-2 border rounded-md bg-muted/50">
+                      {availableReports.find(r => r.id === selectedReportId)?.title}
                     </div>
-                  ))}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="date-from">Date Range</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label htmlFor="date-from" className="text-xs">From</Label>
+                        <Input 
+                          id="date-from"
+                          type="date" 
+                          value={dateRange.start}
+                          onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="date-to" className="text-xs">To</Label>
+                        <Input 
+                          id="date-to"
+                          type="date" 
+                          value={dateRange.end}
+                          onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="format">Format</Label>
+                    <Select 
+                      value={reportFormat} 
+                      onValueChange={setReportFormat}
+                    >
+                      <SelectTrigger id="format">
+                        <SelectValue placeholder="Select format" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pdf">PDF Document</SelectItem>
+                        <SelectItem value="excel">Excel Spreadsheet</SelectItem>
+                        <SelectItem value="csv">CSV File</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button 
+                    className="w-full mt-4" 
+                    onClick={handleGenerateReport}
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? (
+                      "Generating..."
+                    ) : (
+                      <>
+                        <Download className="mr-2 h-4 w-4" /> 
+                        Generate Report
+                      </>
+                    )}
+                  </Button>
+                </>
+              ) : (
+                <div className="py-8 text-center">
+                  <FilePlus className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
+                  <p className="mt-4 text-muted-foreground">
+                    Select a report from the left to configure and generate
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="appointments" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Appointment Reports</CardTitle>
-              <CardDescription>Detailed analysis of appointment data</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">Select the metrics and parameters for your appointment reports.</p>
-              
-              <div className="space-y-4">
-                {/* Report filters would go here */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button>Generate Appointment Volume Report</Button>
-                  <Button>Generate Cancellation Analysis</Button>
-                  <Button>Generate Wait Time Report</Button>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="patients" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Patient Reports</CardTitle>
-              <CardDescription>Analyze patient demographics and trends</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">Generate reports about your patient population and their care.</p>
-              
-              <div className="space-y-4">
-                {/* Report options would go here */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button>Generate Patient Demographics Report</Button>
-                  <Button>Generate Treatment Outcomes Report</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="claims" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Claims Reports</CardTitle>
-              <CardDescription>Financial and insurance claims analysis</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">Track claim status, payments, and reimbursements.</p>
-              
-              <div className="space-y-4">
-                {/* Report options would go here */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button>Generate Claims Status Report</Button>
-                  <Button>Generate Reimbursement Analysis</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
 };

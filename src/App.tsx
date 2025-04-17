@@ -16,8 +16,12 @@ import DoctorProfile from "./pages/doctors/DoctorProfile";
 import AppointmentsList from "./pages/appointments/AppointmentsList";
 import AppointmentsCalendar from "./pages/appointments/AppointmentsCalendar";
 import PatientsList from "./pages/patients/PatientsList";
+import AddPatient from "./pages/patients/AddPatient";
+import PatientDashboard from "./pages/patients/PatientDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import MessagingHub from "./pages/messaging/MessagingHub";
 import ClaimsList from "./pages/claims/ClaimsList";
+import SubmitClaim from "./pages/claims/SubmitClaim";
 import ReportsHub from "./pages/reports/ReportsHub";
 import SettingsPage from "./pages/settings/SettingsPage";
 import NotFound from "./pages/NotFound";
@@ -54,12 +58,18 @@ const App = () => (
             
             {/* Patient Routes */}
             <Route path="patients" element={<PatientsList />} />
+            <Route path="patients/add" element={<AddPatient />} />
+            <Route path="patients/dashboard" element={<PatientDashboard />} />
+            
+            {/* Admin Routes */}
+            <Route path="admin/dashboard" element={<AdminDashboard />} />
             
             {/* Messaging Routes */}
             <Route path="messaging" element={<MessagingHub />} />
             
             {/* Claims Routes */}
             <Route path="claims" element={<ClaimsList />} />
+            <Route path="claims/submit" element={<SubmitClaim />} />
             
             {/* Reports Routes */}
             <Route path="reports" element={<ReportsHub />} />

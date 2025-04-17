@@ -14,7 +14,10 @@ import {
   ChevronLeft,
   LogOut,
   CircleDot,
-  FileBarChart
+  FileBarChart,
+  BarChart,
+  UserPlus,
+  FilePlus
 } from "lucide-react";
 
 interface SidebarProps {
@@ -27,16 +30,20 @@ interface NavItem {
   href: string;
   icon: React.ElementType;
   submenu?: { title: string; href: string }[];
+  roles?: string[];
 }
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const location = useLocation();
   const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
+  const [userRole, setUserRole] = React.useState("admin"); // In real app, this would come from auth context
 
+  // Define common and role-specific navigation items
   const navItems: NavItem[] = [
     {
       title: "Dashboard",
-      href: "/dashboard",
+      href: userRole === "admin" ? "/admin/dashboard" : 
+            userRole === "patient" ? "/patients/dashboard" : "/dashboard",
       icon: LayoutDashboard,
     },
     {
@@ -47,6 +54,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         { title: "All Appointments", href: "/appointments" },
         { title: "Calendar View", href: "/appointments/calendar" },
       ],
+      roles: ["admin", "doctor", "patient"],
     },
     {
       title: "Doctors",
@@ -56,6 +64,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         { title: "All Doctors", href: "/doctors" },
         { title: "Add Doctor", href: "/doctors/add" },
       ],
+      roles: ["admin"],
     },
     {
       title: "Patients",
@@ -65,11 +74,13 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         { title: "All Patients", href: "/patients" },
         { title: "Add Patient", href: "/patients/add" },
       ],
+      roles: ["admin", "doctor"],
     },
     {
       title: "Messaging",
       href: "/messaging",
       icon: MessageSquare,
+      roles: ["admin", "doctor", "patient"],
     },
     {
       title: "Claims",
@@ -79,16 +90,19 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         { title: "All Claims", href: "/claims" },
         { title: "Submit Claim", href: "/claims/submit" },
       ],
+      roles: ["admin", "doctor", "patient"],
     },
     {
       title: "Reports",
       href: "/reports",
       icon: FileBarChart,
+      roles: ["admin", "doctor"],
     },
     {
       title: "Settings",
       href: "/settings",
       icon: Settings,
+      roles: ["admin", "doctor", "patient"],
     },
   ];
 
@@ -98,6 +112,16 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
 
   const isActive = (href: string) => {
     return location.pathname === href;
+  };
+
+  // Filter navigation items based on user role
+  const filteredNavItems = userRole === "admin" 
+    ? navItems 
+    : navItems.filter(item => !item.roles || item.roles.includes(userRole));
+
+  // Add function to change user role (for demo purposes)
+  const changeUserRole = (role: string) => {
+    setUserRole(role);
   };
 
   return (
@@ -130,9 +154,45 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         </button>
       </div>
       
+      {/* Demo role switcher - this would not exist in a real app */}
+      {isOpen && (
+        <div className="mx-4 p-2 mb-2 bg-gray-100 rounded">
+          <p className="text-xs font-medium mb-1 text-gray-500">Demo: Switch Role</p>
+          <div className="flex space-x-1">
+            <button 
+              onClick={() => changeUserRole('admin')} 
+              className={cn(
+                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
+                userRole === 'admin' ? "bg-primary text-white" : "bg-gray-200"
+              )}
+            >
+              Admin
+            </button>
+            <button 
+              onClick={() => changeUserRole('doctor')} 
+              className={cn(
+                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
+                userRole === 'doctor' ? "bg-primary text-white" : "bg-gray-200"
+              )}
+            >
+              Doctor
+            </button>
+            <button 
+              onClick={() => changeUserRole('patient')} 
+              className={cn(
+                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
+                userRole === 'patient' ? "bg-primary text-white" : "bg-gray-200"
+              )}
+            >
+              Patient
+            </button>
+          </div>
+        </div>
+      )}
+      
       <div className="flex-1 pt-2 pb-4 overflow-y-auto scroll-hidden">
         <nav className="flex-1 px-2 space-y-1">
-          {navItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <div key={item.title}>
               {item.submenu ? (
                 <>
