@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +12,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import DoctorsList from "./pages/doctors/DoctorsList";
 import AddDoctor from "./pages/doctors/AddDoctor";
+import DoctorProfile from "./pages/doctors/DoctorProfile";
 import AppointmentsList from "./pages/appointments/AppointmentsList";
 import AppointmentsCalendar from "./pages/appointments/AppointmentsCalendar";
 import PatientsList from "./pages/patients/PatientsList";
@@ -44,6 +46,7 @@ const App = () => (
             {/* Doctor Routes */}
             <Route path="doctors" element={<DoctorsList />} />
             <Route path="doctors/add" element={<AddDoctor />} />
+            <Route path="doctors/:id" element={<DoctorProfile />} />
             
             {/* Appointment Routes */}
             <Route path="appointments" element={<AppointmentsList />} />
