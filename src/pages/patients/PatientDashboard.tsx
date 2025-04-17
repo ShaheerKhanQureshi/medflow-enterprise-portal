@@ -3,14 +3,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Calendar,
-  FileMedical,
-  FileText,
+  FileText,  // Replace FileMedical with FileText
   MessageSquare,
   Pill,
   User,
   Clock,
   AlertTriangle,
-  CreditCard
+  CreditCard,
+  File  // Added File icon as an alternative
 } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
