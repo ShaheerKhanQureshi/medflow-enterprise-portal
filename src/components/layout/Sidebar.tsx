@@ -17,7 +17,10 @@ import {
   FileBarChart,
   BarChart,
   UserPlus,
-  FilePlus
+  FilePlus,
+  Building,
+  Briefcase,
+  Shield
 } from "lucide-react";
 
 interface SidebarProps {
@@ -43,7 +46,8 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     {
       title: "Dashboard",
       href: userRole === "admin" ? "/admin/dashboard" : 
-            userRole === "patient" ? "/patients/dashboard" : "/dashboard",
+            userRole === "patient" ? "/patients/dashboard" :
+            userRole === "corporate" ? "/corporate/dashboard" : "/dashboard",
       icon: LayoutDashboard,
     },
     {
@@ -77,10 +81,22 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       roles: ["admin", "doctor"],
     },
     {
+      title: "Corporate",
+      href: "/corporate/dashboard",
+      icon: Building,
+      submenu: [
+        { title: "Dashboard", href: "/corporate/dashboard" },
+        { title: "Companies", href: "/corporate/companies" },
+        { title: "Employees", href: "/corporate/employees" },
+        { title: "Insurance Plans", href: "/corporate/insurance-plans" },
+      ],
+      roles: ["admin", "corporate"],
+    },
+    {
       title: "Messaging",
       href: "/messaging",
       icon: MessageSquare,
-      roles: ["admin", "doctor", "patient"],
+      roles: ["admin", "doctor", "patient", "corporate"],
     },
     {
       title: "Claims",
@@ -90,19 +106,19 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         { title: "All Claims", href: "/claims" },
         { title: "Submit Claim", href: "/claims/submit" },
       ],
-      roles: ["admin", "doctor", "patient"],
+      roles: ["admin", "doctor", "patient", "corporate"],
     },
     {
       title: "Reports",
       href: "/reports",
       icon: FileBarChart,
-      roles: ["admin", "doctor"],
+      roles: ["admin", "doctor", "corporate"],
     },
     {
       title: "Settings",
       href: "/settings",
       icon: Settings,
-      roles: ["admin", "doctor", "patient"],
+      roles: ["admin", "doctor", "patient", "corporate"],
     },
   ];
 
@@ -158,7 +174,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       {isOpen && (
         <div className="mx-4 p-2 mb-2 bg-gray-100 rounded">
           <p className="text-xs font-medium mb-1 text-gray-500">Demo: Switch Role</p>
-          <div className="flex space-x-1">
+          <div className="flex flex-wrap gap-1">
             <button 
               onClick={() => changeUserRole('admin')} 
               className={cn(
@@ -185,6 +201,15 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               )}
             >
               Patient
+            </button>
+            <button 
+              onClick={() => changeUserRole('corporate')} 
+              className={cn(
+                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
+                userRole === 'corporate' ? "bg-primary text-white" : "bg-gray-200"
+              )}
+            >
+              Corporate
             </button>
           </div>
         </div>

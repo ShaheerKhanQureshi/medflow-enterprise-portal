@@ -30,6 +30,15 @@ import ReportsHub from "./pages/reports/ReportsHub";
 import SettingsPage from "./pages/settings/SettingsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import NotFound from "./pages/NotFound";
+import CorporateLogin from "./pages/corporate/CorporateLogin";
+import CorporateDashboard from "./pages/corporate/CorporateDashboard";
+import CompaniesList from "./pages/corporate/CompaniesList";
+import CompanyDetail from "./pages/corporate/CompanyDetail";
+import AddCompany from "./pages/corporate/AddCompany";
+import EmployeesList from "./pages/corporate/EmployeesList";
+import EmployeeDetail from "./pages/corporate/EmployeeDetail";
+import AddEmployee from "./pages/corporate/AddEmployee";
+import InsurancePlansList from "./pages/corporate/InsurancePlansList";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +55,7 @@ const App = () => (
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="forgot-password" element={<ForgotPassword />} />
+              <Route path="corporate-login" element={<CorporateLogin />} />
             </Route>
             
             {/* Protected Routes */}
@@ -68,10 +78,20 @@ const App = () => (
               <Route path="patients/add" element={<AddPatient />} />
               <Route path="patients/dashboard" element={<PatientDashboard />} />
               <Route path="patients/profile/:id" element={<PatientProfile />} />
-              <Route path="patients/:id" element={<PatientProfile />} /> {/* Add this route to fix 404 */}
+              <Route path="patients/:id" element={<PatientProfile />} />
               
               {/* Admin Routes */}
               <Route path="admin/dashboard" element={<AdminDashboard />} />
+              
+              {/* Corporate Routes */}
+              <Route path="corporate/dashboard" element={<CorporateDashboard />} />
+              <Route path="corporate/companies" element={<CompaniesList />} />
+              <Route path="corporate/companies/add" element={<AddCompany />} />
+              <Route path="corporate/companies/:id" element={<CompanyDetail />} />
+              <Route path="corporate/employees" element={<EmployeesList />} />
+              <Route path="corporate/employees/add" element={<AddEmployee />} />
+              <Route path="corporate/employees/:id" element={<EmployeeDetail />} />
+              <Route path="corporate/insurance-plans" element={<InsurancePlansList />} />
               
               {/* Messaging Routes */}
               <Route path="messaging" element={<MessagingHub />} />
