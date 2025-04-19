@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/hooks/use-theme";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Badge } from "@/components/ui/badge";
+import { Badge as UiBadge } from "@/components/ui/badge"; // Rename imported Badge
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -218,7 +218,7 @@ const SettingsPage = () => {
                         <div className="text-sm text-muted-foreground">Web - Chrome on Windows</div>
                         <div className="text-sm text-muted-foreground mt-1">Started 2 hours ago - 192.168.1.1</div>
                       </div>
-                      <Badge className="bg-green-100 text-green-800">Active</Badge>
+                      <UiBadge className="bg-green-100 text-green-800">Active</UiBadge>
                     </div>
                   </div>
                   
@@ -317,9 +317,3 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
-
-const Badge = ({ children, className }: { children: React.ReactNode, className?: string }) => (
-  <span className={`px-2 py-1 rounded-full text-xs font-medium ${className}`}>
-    {children}
-  </span>
-);
