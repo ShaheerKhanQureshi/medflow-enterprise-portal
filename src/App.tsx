@@ -68,6 +68,7 @@ const App = () => (
               <Route path="patients/add" element={<AddPatient />} />
               <Route path="patients/dashboard" element={<PatientDashboard />} />
               <Route path="patients/profile/:id" element={<PatientProfile />} />
+              <Route path="patients/:id" element={<PatientProfile />} /> {/* Add this route to fix 404 */}
               
               {/* Admin Routes */}
               <Route path="admin/dashboard" element={<AdminDashboard />} />
