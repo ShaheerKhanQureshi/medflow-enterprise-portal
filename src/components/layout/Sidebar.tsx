@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -39,9 +38,10 @@ interface NavItem {
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const location = useLocation();
   const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
-  const [userRole, setUserRole] = React.useState("admin"); // In real app, this would come from auth context
+  // Get user role from localStorage instead of state
+  const userRole = localStorage.getItem('userRole') || 'patient';
 
-  // Define common and role-specific navigation items
+  // Define navigation items (previously defined)
   const navItems: NavItem[] = [
     {
       title: "Dashboard",
@@ -135,11 +135,6 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     ? navItems 
     : navItems.filter(item => !item.roles || item.roles.includes(userRole));
 
-  // Add function to change user role (for demo purposes)
-  const changeUserRole = (role: string) => {
-    setUserRole(role);
-  };
-
   return (
     <aside
       className={cn(
@@ -169,51 +164,6 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
           {isOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
         </button>
       </div>
-      
-      {/* Demo role switcher - this would not exist in a real app */}
-      {isOpen && (
-        <div className="mx-4 p-2 mb-2 bg-gray-100 rounded">
-          <p className="text-xs font-medium mb-1 text-gray-500">Demo: Switch Role</p>
-          <div className="flex flex-wrap gap-1">
-            <button 
-              onClick={() => changeUserRole('admin')} 
-              className={cn(
-                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
-                userRole === 'admin' ? "bg-primary text-white" : "bg-gray-200"
-              )}
-            >
-              Admin
-            </button>
-            <button 
-              onClick={() => changeUserRole('doctor')} 
-              className={cn(
-                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
-                userRole === 'doctor' ? "bg-primary text-white" : "bg-gray-200"
-              )}
-            >
-              Doctor
-            </button>
-            <button 
-              onClick={() => changeUserRole('patient')} 
-              className={cn(
-                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
-                userRole === 'patient' ? "bg-primary text-white" : "bg-gray-200"
-              )}
-            >
-              Patient
-            </button>
-            <button 
-              onClick={() => changeUserRole('corporate')} 
-              className={cn(
-                "text-xs px-2 py-1 rounded flex-1 transition-colors", 
-                userRole === 'corporate' ? "bg-primary text-white" : "bg-gray-200"
-              )}
-            >
-              Corporate
-            </button>
-          </div>
-        </div>
-      )}
       
       <div className="flex-1 pt-2 pb-4 overflow-y-auto scroll-hidden">
         <nav className="flex-1 px-2 space-y-1">

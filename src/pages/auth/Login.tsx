@@ -41,10 +41,14 @@ const Login = () => {
     setTimeout(() => {
       setIsLoading(false);
       if (demoAccount) {
+        // Store user role in localStorage
+        localStorage.setItem('userRole', demoAccount.role.toLowerCase());
+        
         toast({
           title: "Success",
           description: `Logged in as ${demoAccount.role}`,
         });
+
         // Redirect based on role
         switch (demoAccount.role.toLowerCase()) {
           case "admin":
