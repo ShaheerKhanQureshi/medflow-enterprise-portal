@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -30,8 +31,45 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+// Define types for our data
+interface Medication {
+  name: string;
+  instructions: string;
+}
+
+interface Allergy {
+  allergen: string;
+  severity: "Mild" | "Moderate" | "Severe";
+}
+
+interface TimelineEvent {
+  date: string;
+  time: string;
+  type: string;
+  description: string;
+}
+
+interface PatientData {
+  id: string;
+  name: string;
+  age: number;
+  gender: string;
+  phone: string;
+  email: string;
+  lastVisit: string;
+  primaryCondition: string;
+  medications: Medication[];
+  allergies: Allergy[];
+  lastVisitDetails: string;
+  timeline: TimelineEvent[];
+  latestDiagnosis: {
+    date: string;
+    description: string;
+  };
+}
+
 // Mock patient data store - this would be replaced with API calls in a real app
-let patientsData = [
+let patientsData: PatientData[] = [
   {
     id: "patient-001",
     name: "Ayesha Malik",
@@ -151,6 +189,11 @@ const allergyFormSchema = z.object({
   severity: z.enum(["Mild", "Moderate", "Severe"]),
 });
 
+// Type definitions for form data
+type PatientFormValues = z.infer<typeof patientFormSchema>;
+type MedicationFormValues = z.infer<typeof medicationFormSchema>;
+type AllergyFormValues = z.infer<typeof allergyFormSchema>;
+
 const PatientProfile = () => {
   const { id } = useParams();
   const { toast } = useToast();
@@ -187,7 +230,7 @@ const PatientProfile = () => {
   }
 
   // Setup form for patient data
-  const form = useForm<z.infer<typeof patientFormSchema>>({
+  const form = useForm<PatientFormValues>({
     resolver: zodResolver(patientFormSchema),
     defaultValues: {
       name: patientData.name,
@@ -201,7 +244,7 @@ const PatientProfile = () => {
   });
 
   // Setup form for medication
-  const medicationForm = useForm<z.infer<typeof medicationFormSchema>>({
+  const medicationForm = useForm<MedicationFormValues>({
     resolver: zodResolver(medicationFormSchema),
     defaultValues: {
       name: "",
@@ -210,7 +253,7 @@ const PatientProfile = () => {
   });
 
   // Setup form for allergy
-  const allergyForm = useForm<z.infer<typeof allergyFormSchema>>({
+  const allergyForm = useForm<AllergyFormValues>({
     resolver: zodResolver(allergyFormSchema),
     defaultValues: {
       allergen: "",
@@ -219,7 +262,7 @@ const PatientProfile = () => {
   });
 
   // Functions for CRUD operations
-  const handleSavePatient = (values: z.infer<typeof patientFormSchema>) => {
+  const handleSavePatient = (values: PatientFormValues) => {
     // Update the patient data in our mock store
     patientsData = patientsData.map(patient => 
       patient.id === id ? { ...patient, ...values } : patient
@@ -245,9 +288,12 @@ const PatientProfile = () => {
     navigate("/patients");
   };
 
-  const handleAddMedication = (values: z.infer<typeof medicationFormSchema>) => {
+  const handleAddMedication = (values: MedicationFormValues) => {
     const updatedPatient = { ...patientData };
-    updatedPatient.medications.push(values);
+    updatedPatient.medications.push({
+      name: values.name,
+      instructions: values.instructions
+    });
     
     patientsData = patientsData.map(patient => 
       patient.id === id ? updatedPatient : patient
@@ -262,9 +308,12 @@ const PatientProfile = () => {
     });
   };
 
-  const handleEditMedication = (index: number, values: z.infer<typeof medicationFormSchema>) => {
+  const handleEditMedication = (index: number, values: MedicationFormValues) => {
     const updatedPatient = { ...patientData };
-    updatedPatient.medications[index] = values;
+    updatedPatient.medications[index] = {
+      name: values.name,
+      instructions: values.instructions
+    };
     
     patientsData = patientsData.map(patient => 
       patient.id === id ? updatedPatient : patient
@@ -293,9 +342,12 @@ const PatientProfile = () => {
     });
   };
 
-  const handleAddAllergy = (values: z.infer<typeof allergyFormSchema>) => {
+  const handleAddAllergy = (values: AllergyFormValues) => {
     const updatedPatient = { ...patientData };
-    updatedPatient.allergies.push(values);
+    updatedPatient.allergies.push({
+      allergen: values.allergen,
+      severity: values.severity
+    });
     
     patientsData = patientsData.map(patient => 
       patient.id === id ? updatedPatient : patient
@@ -310,9 +362,12 @@ const PatientProfile = () => {
     });
   };
 
-  const handleEditAllergy = (index: number, values: z.infer<typeof allergyFormSchema>) => {
+  const handleEditAllergy = (index: number, values: AllergyFormValues) => {
     const updatedPatient = { ...patientData };
-    updatedPatient.allergies[index] = values;
+    updatedPatient.allergies[index] = {
+      allergen: values.allergen,
+      severity: values.severity
+    };
     
     patientsData = patientsData.map(patient => 
       patient.id === id ? updatedPatient : patient
