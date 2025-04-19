@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { 
@@ -562,8 +561,8 @@ const CompanyDetail = () => {
                 </div>
                 <div className="flex items-start gap-3">
                   <Badge variant={
-                    companyData.billingInfo.accountStatus === "Active" ? "success" : 
-                    companyData.billingInfo.accountStatus === "Pending" ? "warning" : 
+                    companyData.billingInfo.accountStatus === "Active" ? "default" : 
+                    companyData.billingInfo.accountStatus === "Pending" ? "secondary" : 
                     "destructive"
                   }>
                     {companyData.billingInfo.accountStatus}
