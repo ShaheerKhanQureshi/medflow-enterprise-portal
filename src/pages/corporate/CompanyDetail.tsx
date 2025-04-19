@@ -51,7 +51,8 @@ import {
   Trash,
   ArrowLeft,
   Plus,
-  Save
+  Save,
+  Shield
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
