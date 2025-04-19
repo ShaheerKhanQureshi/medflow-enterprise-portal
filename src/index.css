@@ -34,6 +34,12 @@
     --ring: 199 89% 48%;
 
     --radius: 0.5rem;
+    
+    /* Accessibility colors */
+    --a11y-text: 240 100% 10%;
+    --a11y-background: 60 100% 99%;
+    --a11y-primary: 240 100% 30%;
+    --a11y-secondary: 60 100% 50%;
   }
 
   .dark {
@@ -64,6 +70,28 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 199 89% 48%;
+    
+    /* Accessibility colors */
+    --a11y-text: 60 100% 90%;
+    --a11y-background: 240 100% 10%;
+    --a11y-primary: 60 100% 50%;
+    --a11y-secondary: 240 100% 30%;
+  }
+  
+  /* Accessibility theme colors */
+  .theme-accessibility {
+    --background: var(--a11y-background);
+    --foreground: var(--a11y-text);
+    --card: var(--a11y-background);
+    --card-foreground: var(--a11y-text);
+    --popover: var(--a11y-background);
+    --popover-foreground: var(--a11y-text);
+    --primary: var(--a11y-primary);
+    --primary-foreground: var(--a11y-background);
+    --secondary: var(--a11y-secondary);
+    --secondary-foreground: var(--a11y-text);
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 40%;
   }
 }
 
@@ -73,7 +101,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
   }
 
   .medflow-container {
@@ -96,4 +124,23 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+}
+
+/* Additional animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
 }

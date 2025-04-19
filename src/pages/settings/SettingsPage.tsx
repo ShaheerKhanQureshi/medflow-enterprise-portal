@@ -1,5 +1,5 @@
 import React from "react";
-import { User, Bell, Shield, Moon, Sun, LogOut } from "lucide-react";
+import { User, Bell, Shield, Moon, Sun, LogOut, LifeBuoy } from "lucide-react";
 import {
   Tabs,
   TabsContent,
@@ -16,10 +16,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/hooks/use-theme";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
 
 const SettingsPage = () => {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
+  const [colorTheme, setColorTheme] = React.useState("default");
 
   const handleSave = (section: string) => {
     toast({
@@ -269,17 +271,35 @@ const SettingsPage = () => {
                 <div className="mt-6">
                   <h3 className="text-lg font-medium mb-4">Color Theme</h3>
                   <div className="grid grid-cols-3 gap-4">
-                    <Card className={`p-4 cursor-pointer ${theme === 'default' ? 'border-2 border-primary' : ''}`} onClick={() => handleSave("appearance")}>
+                    <Card 
+                      className={`p-4 cursor-pointer ${colorTheme === 'default' ? 'border-2 border-primary' : ''}`} 
+                      onClick={() => {
+                        setColorTheme('default');
+                        handleSave("appearance");
+                      }}
+                    >
                       <div className="h-16 w-full bg-primary rounded-md mb-2"></div>
                       <p className="text-sm font-medium">Default</p>
                     </Card>
-                    <Card className="p-4 cursor-pointer" onClick={() => handleSave("appearance")}>
+                    <Card 
+                      className={`p-4 cursor-pointer ${colorTheme === 'blue' ? 'border-2 border-primary' : ''}`}
+                      onClick={() => {
+                        setColorTheme('blue');
+                        handleSave("appearance");
+                      }}
+                    >
                       <div className="h-16 w-full bg-blue-600 rounded-md mb-2"></div>
                       <p className="text-sm font-medium">Blue</p>
                     </Card>
-                    <Card className="p-4 cursor-pointer" onClick={() => handleSave("appearance")}>
+                    <Card 
+                      className={`p-4 cursor-pointer ${colorTheme === 'accessibility' ? 'border-2 border-primary' : ''}`}
+                      onClick={() => {
+                        setColorTheme('accessibility');
+                        handleSave("appearance");
+                      }}
+                    >
                       <div className="h-16 w-full bg-green-600 rounded-md mb-2"></div>
-                      <p className="text-sm font-medium">Green</p>
+                      <p className="text-sm font-medium">Accessibility</p>
                     </Card>
                   </div>
                 </div>
@@ -298,8 +318,6 @@ const SettingsPage = () => {
 
 export default SettingsPage;
 
-// This is a temporary solution to avoid TypeScript error for Badge in SettingsPage
-// In a real world scenario, we would import it from the appropriate component
 const Badge = ({ children, className }: { children: React.ReactNode, className?: string }) => (
   <span className={`px-2 py-1 rounded-full text-xs font-medium ${className}`}>
     {children}

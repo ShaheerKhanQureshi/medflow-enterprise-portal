@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
@@ -192,14 +193,14 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link to="/profile" className="w-full">Profile</Link>
+                <DropdownMenuItem asChild>
+                  <Link to="/doctors/profile/doctor-001" className="w-full">Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/settings" className="w-full">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/auth/login" className="w-full">Logout</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
