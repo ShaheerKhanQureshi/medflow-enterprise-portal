@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, LogIn } from "lucide-react";
+import { authService } from "@/services/auth.service";
 
 const demoAccounts = [
   { role: "Admin", email: "admin@demo.com", password: "demo123" },
@@ -35,18 +35,41 @@ const Login = () => {
 
     setIsLoading(true);
     
-    // Simulate login and role detection
-    const demoAccount = demoAccounts.find(account => account.email === email && account.password === password);
-    
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // First try the real API
+      const response = await authService.login({ email, password });
+      toast({
+        title: "Success",
+        description: "Logged in successfully",
+      });
+
+      // Redirect based on role
+      switch (response.user.role.toLowerCase()) {
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        case "doctor":
+          navigate("/doctors/profile/1");
+          break;
+        case "patient":
+          navigate("/patients/dashboard");
+          break;
+        case "corporate":
+          navigate("/corporate/dashboard");
+          break;
+        default:
+          navigate("/dashboard");
+      }
+    } catch (error) {
+      // If API fails, fall back to demo accounts
+      const demoAccount = demoAccounts.find(account => account.email === email && account.password === password);
+      
       if (demoAccount) {
-        // Store user role in localStorage
         localStorage.setItem('userRole', demoAccount.role.toLowerCase());
         
         toast({
           title: "Success",
-          description: `Logged in as ${demoAccount.role}`,
+          description: `Logged in as ${demoAccount.role} (Demo)`,
         });
 
         // Redirect based on role
@@ -73,7 +96,9 @@ const Login = () => {
           variant: "destructive",
         });
       }
-    }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const setDemoAccount = (role: string) => {
